@@ -1,0 +1,36 @@
+services:
+  web:
+    image: custom-apache-php:latest
+    ports: 
+      - 80:80
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=rootpassword
+      - MYSQL_DB=lamp_db
+    deploy:
+      replicas: 3
+      resources: 
+        limits:
+          cpus: '0.5'
+          memory: 500M
+      restart_policy:
+        condition: on-failure
+    networks:
+      - lamp-network
+  db:
+    image: mysql:5.7
+    environment: 
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: lamp_db
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - lamp-network
+
+volumes:
+  db_data:
+
+networks:
+  lamp-network:
+
